@@ -1,0 +1,161 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     rhoPimpleFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.15;
+
+deltaT          4e-6;
+
+writeControl adjustableRunTime;
+
+writeInterval   0.001;
+
+purgeWrite      10;
+
+writeFormat     ascii;
+
+writePrecision  8;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+//adjustTimeStep  yes;
+
+maxCo           0.8;
+
+functions
+{	
+	pressure
+    {
+        type            pressure;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+        result          Cp;
+        mode            staticCoeff;
+        rho             rhoInf;
+        rhoInf          1.225;
+        U               UInf;
+        UInf            (241.3596343 21.11623183 0);;
+        pInf            101325;
+    }
+
+    wallShearStress
+    {
+        type            wallShearStress;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+        patches         (Airfoil);
+        format          gnuplot;
+    }
+
+    yPlus
+    {
+        type            yPlus;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+        patches         (Airfoil);
+        format          gnuplot;
+    }
+
+    cellCentres
+    {
+        type            writeCellCentres;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+    }
+
+
+    fieldAverage1
+    {
+        type            fieldAverage;
+        libs            (fieldFunctionObjects);
+        writeControl    writeTime;
+        fields
+        (
+            U
+            {
+                mean        on;
+                prime2Mean  off;
+                base        time;
+            }
+
+            p
+            {
+                mean        on;
+                prime2Mean  off;
+                base        time;
+            }
+            nut
+            {
+                mean        on;
+                prime2Mean  off;
+                base        time;
+            }
+            T 
+            {
+                mean        on;
+                prime2Mean  off;
+                base        time;
+            }
+
+        );
+    }
+
+    forces
+    {
+	
+	residuals
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (U p);
+    }
+        type            forceCoeffs;
+        libs            (forces);
+//        outputControl       timeStep;
+        outputInterval      0.5;
+
+        patches
+        (
+           Airfoil
+        );
+        p               p;
+        U               U;
+        rho             rhoInf;
+        rhoInf      1.225;
+
+        CofR        (0 0 0);
+        liftDir     (-0.08715574275 0.9961946981 0);
+        dragDir     (0.9961946981   0.08715574275 0);
+        pitchAxis   (0 0 1);
+        magUInf     242.2815889;
+        lRef        1.;
+        Aref        0.2;
+    }
+
+}
+// ************************************************************************* //

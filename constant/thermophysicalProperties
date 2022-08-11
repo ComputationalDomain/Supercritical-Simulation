@@ -1,0 +1,54 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            hePsiThermo;
+    mixture         pureMixture;
+    transport       sutherland;
+    thermo          hConst;
+    equationOfState perfectGas;
+    specie          specie;
+    energy          sensibleInternalEnergy;
+}
+
+// Note: these are the properties for a "normalised" inviscid gas
+//       for which the speed of sound is 1 m/s at a temperature of 1K
+//       and gamma = 7/5
+mixture
+{
+    specie
+    {
+        nMoles          1;
+        molWeight       28.97;
+    }
+    thermodynamics
+    {
+        Cp              1005;
+        Cv              718;
+        Hf              0;
+    }
+    transport
+    {
+        As              3.71318e-06; // Re = 6.5e6, mu_inf = 4.566076e-05
+        Ts              120.5043383;
+        Pr              0.71;
+    }
+}
+
+
+// ************************************************************************* //

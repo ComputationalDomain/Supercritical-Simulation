@@ -1,0 +1,72 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+fluxScheme      Kurganov;
+
+ddtSchemes
+{
+    default      backward;
+}
+
+gradSchemes
+{
+    default      leastSquares;
+}
+
+divSchemes
+{
+    default         none;
+    div(tauMC)      Gauss Gauss linearUpwind phi grad(U);
+    div(phi,U)      Gauss Minmod;//vanLeerV;
+    div(phiv,p)      Gauss upwind;
+    div(phid,p)      Gauss Minmod;
+    div(phi,K)      Gauss Minmod;
+    div(phi,e)      Gauss Minmod;
+    div(phi,epsilon)      Gauss Minmod;
+    div(phi,Ekp)      Gauss Minmod;
+    div(phi,nuTilda) Gauss Minmod;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear ;
+    div(((rho*(thermo:mu|rho))*dev2(T(grad(U))))) Gauss linearUpwind phi grad(U);
+    div((rho*R)) Gauss upwind phi;//linearUpwind phi a;//limitedLinear phi 1;
+    div(phi,R)    Gauss upwind;//linearUpwind phi;//limitedLinear 1;
+}
+
+laplacianSchemes
+{
+    default         Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         midPoint;
+    reconstruct(rho) vanLeer;
+    reconstruct(U)  vanLeerV;
+    reconstruct(T)  vanLeer;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
+wallDist
+{
+    method          meshWave;
+}
+
+
+// ************************************************************************* //
