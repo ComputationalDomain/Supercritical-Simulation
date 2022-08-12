@@ -26,9 +26,6 @@ thermoType
     energy          sensibleInternalEnergy;
 }
 
-// Note: these are the properties for a "normalised" inviscid gas
-//       for which the speed of sound is 1 m/s at a temperature of 1K
-//       and gamma = 7/5
 mixture
 {
     specie
